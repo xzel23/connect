@@ -13,7 +13,7 @@ plugins {
 
 /////////////////////////////////////////////////////////////////////////////
 group = 'com.dua3.connect'
-version = '0.1-SNAPSHOT'
+version = '0.1'
 
 ext.scm = 'https://gitlab.com/com.dua3/lib/connect.git'
 ext.repo = 'public'
