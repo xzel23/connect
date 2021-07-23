@@ -1,0 +1,237 @@
+// Copyright (c) 2019 Axel Howind
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'idea'
+    id "com.github.spotbugs" version "4.7.2"
+    id "com.adarshr.test-logger" version "3.0.0"}
+
+/////////////////////////////////////////////////////////////////////////////
+group = 'com.dua3.connect'
+version = '0.1-SNAPSHOT'
+
+ext.scm = 'https://gitlab.com/com.dua3/lib/connect.git'
+ext.repo = 'public'
+
+ext.developerId = 'axh'
+ext.developerName = 'Axel Howind'
+ext.developerEmail = 'axh@dua3.com'
+ext.organization = 'dua3'
+ext.organizationUrl = 'https://www.dua3.com'
+/////////////////////////////////////////////////////////////////////////////
+
+ext {
+    isReleaseVersion = !version.endsWith("SNAPSHOT")
+    java_version = '11'
+    junit_version = '5.7.2'
+}
+
+sourceCompatibility = java_version
+targetCompatibility = java_version
+
+repositories {
+    // Maven local Repository
+    mavenLocal()
+
+    // GitLab Packages
+    if (System.properties.containsKey('gitlabPrivateToken')) {
+        maven {
+            url "https://gitlab.com/api/v4/projects/24900343/packages/maven"
+            name "GitlabPrivate"
+            credentials(HttpHeaderCredentials) {
+                name = 'Private-Token'
+                value = System.properties.get('gitlabPrivateToken')
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    } else if (System.getenv("CI_JOB_TOKEN")!=null) {
+        maven {
+            url "https://gitlab.com/api/v4/projects/24900343/packages/maven"
+            name "GitlabPrivate"
+            credentials(HttpHeaderCredentials) {
+                name = 'Job-Token'
+                value = System.getenv("CI_JOB_TOKEN")
+            }
+            authentication {
+                header(HttpHeaderAuthentication)
+            }
+        }
+    }
+
+    // Maven Central Repository
+    mavenCentral()
+}
+
+// dependencies
+dependencies {
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.1'
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5-win', version: '5.1'
+
+    // JUnit
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junit_version}"
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+        outputDir = file("$buildDir/classes/java/main/")
+        testOutputDir = file("$buildDir/classes/java/test/")
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+testlogger {
+    theme 'standard-parallel'
+}
+
+compileJava {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.addBooleanOption('html5', true)
+}
+
+// === MAVEN publication === >
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "MIT"
+            url "https://opensource.org/licenses/MIT"
+        }
+    }
+    developers {
+        developer {
+            id project.developerId
+            name project.developerName
+            email project.developerEmail
+            organization project.organization
+            organizationUrl project.organizationUrl
+        }
+    }
+
+    scm {
+        url project.scm
+    }
+}
+
+// Create the publication with the pom configuration:
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.name
+            version version
+            from components.java
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', project.description)
+                root.appendNode('name', project.name)
+                root.appendNode('url', project.scm)
+                root.children().last() + pomConfig
+            }
+        }
+    }
+
+    repositories {
+        if (System.properties.containsKey('gitlabPrivateToken')) {
+            System.out.println("!!using private token!!")
+            // Gitlab public packages
+            if (!version.contains("SNAPSHOT")) {
+                maven {
+                    url "https://gitlab.com/api/v4/projects/25276458/packages/maven"
+                    name "GitlabPublic"
+                    credentials(HttpHeaderCredentials) {
+                        name = 'Private-Token'
+                        value = System.properties.get('gitlabPrivateToken')
+                    }
+                    authentication {
+                        header(HttpHeaderAuthentication)
+                    }
+                }
+            }
+
+            // Gitlab private packages
+            maven {
+                url "https://gitlab.com/api/v4/projects/24900343/packages/maven"
+                name "GitlabPrivate"
+                credentials(HttpHeaderCredentials) {
+                    name = 'Private-Token'
+                    value = System.properties.get('gitlabPrivateToken')
+                }
+                authentication {
+                    header(HttpHeaderAuthentication)
+                }
+            }
+
+            // Sonatype OSSRH
+            maven {
+                def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                url = isReleaseVersion ? releaseRepo : snapshotRepo
+                credentials {
+                    username = System.properties.get('ossrhUsername')
+                    password = System.properties.get('ossrhPassword')
+                }
+            }
+        } else if (System.getenv("CI_JOB_TOKEN")!=null) {
+            System.out.println("!!using CI_JOB_TOKEN!!")
+            maven {
+                url "https://gitlab.com/api/v4/projects/24900343/packages/maven"
+                name "GitLab"
+                credentials(HttpHeaderCredentials) {
+                    name = 'Job-Token'
+                    value = System.getenv("CI_JOB_TOKEN")
+                }
+                authentication {
+                    header(HttpHeaderAuthentication)
+                }
+            }
+        } else {
+            System.out.println("!!neither gitlabPrivateToken nor CI_JOB_TOKEN is set -- cannot publish build!!")
+        }
+    }
+}
+
+// === sign artifacts
+signing {
+    sign publishing.publications.mavenJava
+}
+
+// === SPOTBUGS === >
+spotbugs.excludeFilter = rootProject.file('spotbugs-exclude.xml')
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}
+
+// === DEFAULT TASKS === >
+tasks.withType(PublishToMavenRepository) {
+    dependsOn publishToMavenLocal
+}
+
+defaultTasks 'build', 'publishToMavenLocal'
