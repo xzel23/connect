@@ -1,6 +1,7 @@
 package com.dua3.connect;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.win.WinHttpClients;
@@ -24,6 +25,10 @@ public interface Connection extends AutoCloseable {
      * @throws IOException on error
      */
     InputStream openInputStream() throws IOException;
+
+    // override to narrow the exception specification
+    @Override
+    void close() throws IOException;
 
     /**
      * Create connection to a URI given as a string.
@@ -69,19 +74,21 @@ public interface Connection extends AutoCloseable {
                 @Override
                 public void close() throws IOException {
                     LoggerHolder.LOG.fine(() -> "closing connection: " + uri);
-                    stream.close();
+                    if (stream!=null) {
+                        stream.close();
+                    }
                 }
             };
         } else {
             LoggerHolder.LOG.fine("windows-authentification supported.");
             return new Connection() {
-                CloseableHttpClient httpclient = WinHttpClients.createDefault();
+                final CloseableHttpClient httpclient = WinHttpClients.createDefault();
                 CloseableHttpResponse response = null;
 
                 @Override
                 public InputStream openInputStream() throws IOException {
                     LoggerHolder.LOG.fine(() -> "opening connection (using winauth): " + uri);
-                    HttpGet httpget = new HttpGet(uri);
+                    HttpUriRequest httpget = new HttpGet(uri);
                     response = httpclient.execute(httpget);
                     LoggerHolder.LOG.fine(() -> "response: " + response.getReasonPhrase());
                     if (response.getCode()==401) {
