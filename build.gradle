@@ -9,11 +9,11 @@ plugins {
     id 'signing'
     id 'idea'
     id "com.github.spotbugs" version "4.7.2"
-    id "com.adarshr.test-logger" version "3.0.0"}
+}
 
 /////////////////////////////////////////////////////////////////////////////
 group = 'com.dua3.connect'
-version = '0.1'
+version = '1.0'
 
 ext.scm = 'https://gitlab.com/com.dua3/lib/connect.git'
 ext.repo = 'public'
@@ -97,10 +97,6 @@ test {
     useJUnitPlatform()
 }
 
-testlogger {
-    theme 'standard-parallel'
-}
-
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
@@ -137,6 +133,8 @@ def pomConfig = {
 }
 
 // Create the publication with the pom configuration:
+description("A library that facilitates accessing resources on windows shares.")
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
