@@ -14,7 +14,7 @@ plugins {
 
 /////////////////////////////////////////////////////////////////////////////
 group = 'com.dua3.connect'
-version = '1.0.1'
+version = '1.1-SNAPSHOT'
 
 ext.scm = 'https://gitlab.com/com.dua3/lib/connect.git'
 ext.repo = 'public'
@@ -28,8 +28,8 @@ ext.organizationUrl = 'https://www.dua3.com'
 
 ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
-    java_version = '8'
-    junit_version = '5.7.2'
+    java_version = '11'
+    junit_version = '5.8.2'
 }
 
 modularity.mixedJavaRelease 8
@@ -72,8 +72,8 @@ repositories {
 // dependencies
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
-    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.1'
-    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5-win', version: '5.1'
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5', version: '5.1.2'
+    implementation group: 'org.apache.httpcomponents.client5', name: 'httpclient5-win', version: '5.1.2'
 
     // JUnit
     testImplementation "org.junit.jupiter:junit-jupiter-api:${junit_version}"
