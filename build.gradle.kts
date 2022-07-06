@@ -10,8 +10,8 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
-    id("org.javamodularity.moduleplugin") version "1.8.10"
-    id("com.github.spotbugs") version "5.0.6"
+    id("org.javamodularity.moduleplugin") version "1.8.11"
+    id("com.github.spotbugs") version "5.0.9"
     id("com.github.ben-manes.versions") version "0.42.0"
 }
 
