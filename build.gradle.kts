@@ -10,7 +10,6 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
-    id("org.javamodularity.moduleplugin") version "1.8.11"
     id("com.github.spotbugs") version "5.0.9"
     id("com.github.ben-manes.versions") version "0.42.0"
 }
@@ -33,10 +32,12 @@ object meta {
 /////////////////////////////////////////////////////////////////////////////
 
 val isReleaseVersion = !project.version.toString().endsWith("SNAPSHOT")
-val java_version = "11"
-val junit_version = "5.8.2"
 
-modularity.mixedJavaRelease(8)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
 
 repositories {
     mavenLocal()
@@ -50,8 +51,8 @@ dependencies {
     implementation(group = "org.apache.httpcomponents.client5", name = "httpclient5-win", version = "5.1.3")
 
     // JUnit
-    testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
 
 java {

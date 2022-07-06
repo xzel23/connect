@@ -58,39 +58,41 @@ public interface Connection extends AutoCloseable {
      * @return the connection
      */
     static Connection create(URI uri) {
+        Logger log = Logger.getLogger(Connection.class.getName());
+        
         if (!WinHttpClients.isWinAuthAvailable()) {
-            LoggerHolder.LOG.fine("windows-authentification not supported!");
+            log.fine("windows-authentification not supported!");
             return new Connection() {
 
                 private InputStream stream = null;
 
                 @Override
                 public InputStream openInputStream() throws IOException {
-                    LoggerHolder.LOG.fine(() -> "opening connection: " + uri);
+                    log.fine(() -> "opening connection: " + uri);
                     stream = uri.toURL().openStream();
                     return stream;
                 }
 
                 @Override
                 public void close() throws IOException {
-                    LoggerHolder.LOG.fine(() -> "closing connection: " + uri);
+                    log.fine(() -> "closing connection: " + uri);
                     if (stream!=null) {
                         stream.close();
                     }
                 }
             };
         } else {
-            LoggerHolder.LOG.fine("windows-authentification supported.");
+            log.fine("windows-authentification supported.");
             return new Connection() {
                 final CloseableHttpClient httpclient = WinHttpClients.createDefault();
                 CloseableHttpResponse response = null;
 
                 @Override
                 public InputStream openInputStream() throws IOException {
-                    LoggerHolder.LOG.fine(() -> "opening connection (using winauth): " + uri);
+                    log.fine(() -> "opening connection (using winauth): " + uri);
                     HttpUriRequest httpget = new HttpGet(uri);
                     response = httpclient.execute(httpget);
-                    LoggerHolder.LOG.fine(() -> "response: " + response.getReasonPhrase());
+                    log.fine(() -> "response: " + response.getReasonPhrase());
                     if (response.getCode()==401) {
                         throw new IllegalStateException("unauthorized: "+response.getReasonPhrase());
                     }
@@ -99,7 +101,7 @@ public interface Connection extends AutoCloseable {
 
                 @Override
                 public void close() throws IOException {
-                    LoggerHolder.LOG.fine(() -> "closing connection: " + uri);
+                    log.fine(() -> "closing connection: " + uri);
                     try {
                         if (response != null) {
                             response.close();
@@ -110,16 +112,5 @@ public interface Connection extends AutoCloseable {
                 }
             };
         }
-    }
-}
-
-/**
- * Helper class to hold the logger reference.
- */
-@SuppressWarnings("LoggerInitializedWithForeignClass")
-final class LoggerHolder {
-    static final Logger LOG = Logger.getLogger(Connection.class.getName());
-
-    private LoggerHolder() {
     }
 }
