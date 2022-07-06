@@ -16,7 +16,7 @@ plugins {
 
 /////////////////////////////////////////////////////////////////////////////
 project.group = "com.dua3.connect"
-project.version = "1.1"
+project.version = "1.2"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {
@@ -136,8 +136,8 @@ publishing {
             val snapshotRepo = URI("https://s01.oss.sonatype.org/content/repositories/snapshots/")
             url = if (isReleaseVersion) releaseRepo else snapshotRepo
             credentials {
-                username = System.getProperty("ossrhUsername")
-                password = System.getProperty("ossrhPassword")
+                username = project.properties["ossrhUsername"].toString()
+                password = project.properties["ossrhPassword"].toString()
             }
         }
     }
