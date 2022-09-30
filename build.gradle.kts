@@ -10,13 +10,13 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
-    id("com.github.spotbugs") version "5.0.9"
+    id("com.github.spotbugs") version "5.0.12"
     id("com.github.ben-manes.versions") version "0.42.0"
 }
 
 /////////////////////////////////////////////////////////////////////////////
 project.group = "com.dua3.connect"
-project.version = "1.2"
+project.version = "1.3.0"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {
@@ -35,8 +35,10 @@ val isReleaseVersion = !project.version.toString().endsWith("SNAPSHOT")
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -47,17 +49,15 @@ repositories {
 // dependencies
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
-    implementation(group = "org.apache.httpcomponents.client5", name = "httpclient5", version = "5.1.3")
-    implementation(group = "org.apache.httpcomponents.client5", name = "httpclient5-win", version = "5.1.3")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.1.3")
+    implementation("org.apache.httpcomponents.client5:httpclient5-win:5.1.3")
+
+    implementation("org.slf4j:slf4j-api:2.0.3")
+    testImplementation("org.slf4j:slf4j-simple:2.0.3")
 
     // JUnit
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
-}
-
-java {
-    withJavadocJar()
-    withSourcesJar()
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.1")
 }
 
 idea {
@@ -151,7 +151,7 @@ signing {
 // === SPOTBUGS === >
 spotbugs.excludeFilter.set(rootProject.file("spotbugs-exclude.xml"))
 
-// === val TASKS: DEFAULT = == >
+// === TASKS: DEFAULT = == >
 tasks.withType<PublishToMavenRepository>() {
     dependsOn(tasks.publishToMavenLocal)
 }

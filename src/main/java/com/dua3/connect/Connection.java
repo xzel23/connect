@@ -5,13 +5,14 @@ import org.apache.hc.client5.http.classic.methods.HttpUriRequest;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.win.WinHttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.logging.Logger;
 
 /**
  * A connection interface that unifies access to network resources by using Windows authorization
@@ -58,41 +59,41 @@ public interface Connection extends AutoCloseable {
      * @return the connection
      */
     static Connection create(URI uri) {
-        Logger log = Logger.getLogger(Connection.class.getName());
+        Logger log = LoggerFactory.getLogger(Connection.class);
         
         if (!WinHttpClients.isWinAuthAvailable()) {
-            log.fine("windows-authentification not supported!");
+            log.debug("windows-authentification not supported!");
             return new Connection() {
 
                 private InputStream stream = null;
 
                 @Override
                 public InputStream openInputStream() throws IOException {
-                    log.fine(() -> "opening connection: " + uri);
+                    log.debug("opening connection: {}", uri);
                     stream = uri.toURL().openStream();
                     return stream;
                 }
 
                 @Override
                 public void close() throws IOException {
-                    log.fine(() -> "closing connection: " + uri);
+                    log.debug("closing connection: {}", uri);
                     if (stream!=null) {
                         stream.close();
                     }
                 }
             };
         } else {
-            log.fine("windows-authentification supported.");
+            log.debug("windows-authentification supported.");
             return new Connection() {
                 final CloseableHttpClient httpclient = WinHttpClients.createDefault();
                 CloseableHttpResponse response = null;
 
                 @Override
                 public InputStream openInputStream() throws IOException {
-                    log.fine(() -> "opening connection (using winauth): " + uri);
+                    log.debug("opening connection (using winauth): {}", uri);
                     HttpUriRequest httpget = new HttpGet(uri);
                     response = httpclient.execute(httpget);
-                    log.fine(() -> "response: " + response.getReasonPhrase());
+                    log.debug("response: {}", response.getReasonPhrase());
                     if (response.getCode()==401) {
                         throw new IllegalStateException("unauthorized: "+response.getReasonPhrase());
                     }
@@ -101,7 +102,7 @@ public interface Connection extends AutoCloseable {
 
                 @Override
                 public void close() throws IOException {
-                    log.fine(() -> "closing connection: " + uri);
+                    log.debug("closing connection: {}", uri);
                     try {
                         if (response != null) {
                             response.close();
