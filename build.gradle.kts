@@ -10,13 +10,13 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
-    id("com.github.spotbugs") version "5.0.12"
-    id("com.github.ben-manes.versions") version "0.42.0"
+    id("com.github.spotbugs") version "5.0.13"
+    id("com.github.ben-manes.versions") version "0.45.0"
 }
 
 /////////////////////////////////////////////////////////////////////////////
 project.group = "com.dua3.connect"
-project.version = "1.3.0"
+project.version = "1.4.0-SNAPSHOT"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {
@@ -49,15 +49,15 @@ repositories {
 // dependencies
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.1.3")
-    implementation("org.apache.httpcomponents.client5:httpclient5-win:5.1.3")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5-win:5.2.1")
 
-    implementation("org.slf4j:slf4j-api:2.0.3")
-    testImplementation("org.slf4j:slf4j-simple:2.0.3")
+    implementation("org.slf4j:slf4j-api:2.0.6")
+    testImplementation("org.slf4j:slf4j-simple:2.0.6")
 
     // JUnit
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
 idea {
