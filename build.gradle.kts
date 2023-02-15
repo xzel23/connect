@@ -16,7 +16,7 @@ plugins {
 
 /////////////////////////////////////////////////////////////////////////////
 project.group = "com.dua3.connect"
-project.version = "1.4.0-SNAPSHOT"
+project.version = "2.0.0-rc1"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {

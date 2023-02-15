@@ -8,6 +8,11 @@ Use any of the `Connection.create(...)` overloads to create a connection. `openI
 Changes
 -------
 
+### V 2.0.0
+
+ - update dependencies
+ - set custom header parameters
+
 ### V 1.3.0
 
  - update dependencies
