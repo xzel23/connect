@@ -1,0 +1,9 @@
+/bin
+/build
+*/bin
+*/build
+*/out
+*/gradle.properties
+*/.*
+**/.*
+/target/
