@@ -20,7 +20,7 @@ project.version = "2.0.0-rc1"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {
-    val scm = "https://gitlab.com/com.dua3/lib/connect.git"
+    val scm = "https://github.com/xzel23/connect.git"
     val repo = "public"
 
     val developerId = "axh"
