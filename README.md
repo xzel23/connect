@@ -12,6 +12,7 @@ Changes
 
  - update dependencies
  - set custom header parameters
+ - @NonNullApi - assertions are added for all parameters not marked as @Nullable (using cabe)
 
 ### V 1.3.0
 

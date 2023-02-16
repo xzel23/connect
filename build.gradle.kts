@@ -10,13 +10,14 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
+    id("com.dua3.cabe") version "1.2.0"
     id("com.github.spotbugs") version "5.0.13"
     id("com.github.ben-manes.versions") version "0.45.0"
 }
 
 /////////////////////////////////////////////////////////////////////////////
 project.group = "com.dua3.connect"
-project.version = "2.0.0-rc1"
+project.version = "2.0.0-rc2"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {
@@ -52,8 +53,12 @@ dependencies {
     implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
     implementation("org.apache.httpcomponents.client5:httpclient5-win:5.2.1")
 
+    // SLF4J
     implementation("org.slf4j:slf4j-api:2.0.6")
     testImplementation("org.slf4j:slf4j-simple:2.0.6")
+
+    // Cabe (source annotations)
+    compileOnly("com.dua3.cabe:cabe-annotations:1.0.0")
 
     // JUnit
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
