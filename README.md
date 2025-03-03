@@ -8,6 +8,11 @@ Use any of the `Connection.create(...)` overloads to create a connection. `openI
 Changes
 -------
 
+### V 2.1.0
+
+ - update plugins and dependencies
+ - use jspecify
+
 ### V 2.0.0
 
  - update dependencies

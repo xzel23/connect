@@ -10,14 +10,14 @@ plugins {
     id("maven-publish")
     id("signing")
     id("idea")
-    id("com.dua3.cabe") version "1.2.0"
-    id("com.github.spotbugs") version "5.0.13"
-    id("com.github.ben-manes.versions") version "0.45.0"
+    id("com.dua3.cabe") version "3.0.2"
+    id("com.github.spotbugs") version "6.1.6"
+    id("com.github.ben-manes.versions") version "0.52.0"
 }
 
 /////////////////////////////////////////////////////////////////////////////
 project.group = "com.dua3.connect"
-project.version = "2.0.0-rc2"
+project.version = "2.1.0"
 project.description = "A library that facilitates accessing resources on windows shares."
 
 object meta {
@@ -50,19 +50,19 @@ repositories {
 // dependencies
 dependencies {
     // https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5
-    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.1")
-    implementation("org.apache.httpcomponents.client5:httpclient5-win:5.2.1")
+    implementation("org.apache.httpcomponents.client5:httpclient5:5.2.3")
+    implementation("org.apache.httpcomponents.client5:httpclient5-win:5.2.3")
 
     // SLF4J
-    implementation("org.slf4j:slf4j-api:2.0.6")
-    testImplementation("org.slf4j:slf4j-simple:2.0.6")
+    implementation("org.slf4j:slf4j-api:2.0.17")
+    testImplementation("org.slf4j:slf4j-simple:2.0.17")
 
-    // Cabe (source annotations)
-    compileOnly("com.dua3.cabe:cabe-annotations:1.0.0")
+    // JSpecify
+    implementation("org.jspecify:jspecify:1.0.0")
 
     // JUnit
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.12.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.12.0")
 }
 
 idea {
@@ -83,7 +83,6 @@ tasks.compileJava {
 
 tasks.javadoc {
     options.encoding = "UTF-8"
-    // options.addBooleanOption("html5", true)
 }
 
 // === val publication: MAVEN = == >

@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
 
-class ConnectionImp implements Connection {
+final class ConnectionImp implements Connection {
     private static final Logger LOG = LoggerFactory.getLogger(com.dua3.connect.ConnectionImp.class);
 
     final CloseableHttpClient httpclient;
